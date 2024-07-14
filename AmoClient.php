@@ -77,10 +77,12 @@ class AmoClient {
         }
         
         curl_setopt($curl,CURLOPT_HEADER, false);
+        
         if (ISSET($data)) {
             curl_setopt($curl,CURLOPT_CUSTOMREQUEST, 'POST');
             curl_setopt($curl,CURLOPT_POSTFIELDS, json_encode($data));
         }
+        
         curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, 1);
         curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, 2);
         $out = curl_exec($curl); //Инициируем запрос к API и сохраняем ответ в переменную
@@ -105,6 +107,10 @@ class AmoClient {
             }
         }
         catch(\Exception $e) {
+            $f3 = fopen("./err_logs/" . date("Y-m-d H:i:s") . ".txt", 'a');
+            fwrite($f3, print_r('Ошибка: ' . $e->getMessage() . PHP_EOL . 'Код ошибки: ' . $e->getCode(), true) . PHP_EOL);
+            fwrite($f3, print_r($out, true));
+            
             die('Ошибка: ' . $e->getMessage() . PHP_EOL . 'Код ошибки: ' . $e->getCode());
         }
         

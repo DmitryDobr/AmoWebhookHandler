@@ -18,15 +18,33 @@
         // Если прошло больше времени, чем половина длительности токена
         if (time() - $amo->getSettings()->updated_at >= $amo->getSettings()->expires_in / 2) {
             $db->updateAmoVals($amo->updateAmoAccessToken());
-            echo "update access token" . PHP_EOL;
+            echo "token updated at " . date("Y-m-d H:i:s") . PHP_EOL;
         }
         else {
             echo "using current access token" . PHP_EOL;
         }
     }
     
-    //print_r($amo->getSettings());
-    print_r($amo->ApiRequest('/api/v4/account?with=task_types', null, true, false));
+	
+    if (ISSET($_POST['leads']['status'])) { // если пришла информация о смене этапа сделки
+        $data = array();
+        
+        foreach ($_POST['leads']['status'] as $lead) {
+            if ($lead['status_id'] == 68168198) { // простое условие на определение этапа сделки
+                $dat = [
+                    'task_type_id' => 3454974, // идентификатор типа задачи
+                    'text' => "Текст задачи",
+                    'complete_till' => time() + 172800, // текущее время + время на выполнение в сек.
+                    'entity_id' => (int) $lead['id'], // прикручиваем задачу к сделке, в которой обновился статус
+                    'entity_type' => 'leads',
+                    'responsible_user_id' => (int) $lead['responsible_user_id'], // прикручиваем задачу к текущему менеджеру сделки
+                ];
+                array_push($data, $dat);
+            }
+        }
+        
+        $amo->ApiRequest('/api/v4/tasks', $data);
+    }
 
     
     http_response_code(200);
