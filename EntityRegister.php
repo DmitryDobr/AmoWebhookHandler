@@ -21,4 +21,11 @@
     $result = $amo->ApiRequest('/api/v4/account?with=task_types', null, true, false);
     $db->insertAmoAccountParams($result['_embedded']['task_types'], db_handler::TASK_TYPES_TBL_NAME);
 
+    // перенести из Amo идентификаторы, названия и т.д. всех этапов сделок во всех воронках в БД
+    $result = $amo->ApiRequest('/api/v4/leads/pipelines');
+    foreach ($result['_embedded']['pipelines'] as $pipeline) {
+        $db->insertAmoAccountParams($pipeline['_embedded']['statuses'], DbHandler::LEAD_STATUS_TBL_NAME);
+    }
+    echo "registered";
+
 ?>
