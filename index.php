@@ -8,7 +8,7 @@
     require_once 'db_handler.php';
     require_once 'AmoClient.php';
     
-    $db = new db_handler();
+    $db = new DbHandler();
     $amo = new AmoClient($db->getAllValAmo());
     
     if (!ISSET($amo->getSettings()->access_token)) {
