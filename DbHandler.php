@@ -1,6 +1,6 @@
 <?php
 
-class db_handler {
+class DbHandler {
     
     var $con;
     
