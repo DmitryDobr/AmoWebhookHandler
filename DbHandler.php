@@ -5,8 +5,8 @@ class DbHandler {
     var $con;
     
     const TASK_TYPES_TBL_NAME = 'amo_account_task_types';
-    const PIPELINES_TBL_NAME = 'amo_account_pipelines';
     const LEAD_STATUS_TBL_NAME = 'amo_account_lead_status';
+    const LEAD_STATUS_AUTO_TBL_NAME = 'leads_status';
     
     function __construct() {
         $host = "localhost";
@@ -100,6 +100,15 @@ class DbHandler {
 	    }
         
         return $flag;
+    }
+
+    function getLeadStatusAutomatization($status_id, $pipeline_id) {
+        $result = mysqli_query($this->con, 'SELECT task_type_id, task_text, complete_till, responsible_user FROM leads_status WHERE id='.$status_id.' AND pipeline_id='. $pipeline_id);
+        
+	    return $result->fetch_all(MYSQLI_ASSOC);
+	    // в результате отправляется ассоциативный массив
+	    // с полями типа задачи, текста задачи, времени в сек. с текущего момента
+	    // на выполнение, ответственный пользователь (может быть текущий в сделке, а можно указать другого)
     }
 }
 
