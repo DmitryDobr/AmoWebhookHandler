@@ -28,10 +28,10 @@
 Первая авторизация производится при помощи refresh_code. При успешном ответе данные о токенах переносятся в БД, после чего можно авторизовываться при помощи access_token. Можно по отдельному запросу производить авторизацию, можно на хосте поставить Cron задачу на обновление токенов. После авторизации клиент Amo поддерживает все доступные API запросы представленные в документации.
 
 ```php
-  require_once 'db_handler.php';
+  require_once 'DbHandler.php';
   require_once 'AmoClient.php';
   
-  $db = new db_handler();
+  $db = new DbHandler();
   $amo = new AmoClient($db->getAllValAmo());
   
   if (!ISSET($amo->getSettings()->access_token)) {
