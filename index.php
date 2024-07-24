@@ -5,8 +5,7 @@
     header('Access-Control-Allow-Credentials: true');
     header('Content-Type: text/html; charset=utf-8');
     
-    // на входящий запрос надо ответить в течение 2 секунд
-    // иначе хук считается невалидным
+    // на входящий запрос надо ответить в течение 2 секунд иначе хук считается невалидным
     ignore_user_abort(true);
     ob_start();
     echo 'true';
@@ -16,12 +15,15 @@
     ob_end_flush();
     ob_flush();
     flush(); // отправляем буфер в ответ с кодом 200
-    
     // Далее неспеша обрабатываем POST запрос
     //-----------------------------------------------------
 
-    require_once 'DbHandler.php';
-    require_once 'AmoClient.php';
+    function autoloder($class) {
+        $file = __DIR__ . "/classes/{$class}.php";
+        if(file_exists($file))
+            require_once $file;
+    }
+    spl_autoload_register('autoloder');
     
     $db = new DbHandler();
     $amo = new AmoClient($db->getAllValAmo());
