@@ -3,7 +3,7 @@
 
 При входящем Хуке, содержащем данные POST, сервер анализирует пришедший JSON-файл и далее можно выполнять любую дополнительную логику. Например, изначально проект использовался для приема информации о смене этапов сделки и автоматическом назначении задач.
 
-В дальнейшем планируется работать с использованием официальной php библиотеки от AmoCRM.
+В дальнейшем проект возможно будет работать с использованием официальной php библиотеки от AmoCRM.
 
 ## 1. WebHooks
 ВебХук - уведомление, которое система Amo может присылать сторонним приложениям. Для подключения в разделе AmoМаркет в меню WebHooks нужно отметить нужные события, по которым будет приходить уведомление на сервер. Подробнее о вебхуках [читайте в данном разделе](https://www.amocrm.ru/developers/content/api/webhooks).
@@ -36,12 +36,16 @@
   
   if (!ISSET($amo->getSettings()->access_token)) {
     $db->updateAmoVals($amo->initAmoRefCode());
+    echo "token init at " . date("Y-m-d H:i:s") . PHP_EOL;
   }
   else {
     // Если прошло больше времени, чем половина длительности токена
     if (time() - $amo->getSettings()->updated_at >= $amo->getSettings()->expires_in / 2) {
       $db->updateAmoVals($amo->updateAmoAccessToken());
       echo "token updated at " . date("Y-m-d H:i:s") . PHP_EOL;
+    }
+    else {
+      echo "using current token " . date("Y-m-d H:i:s") . PHP_EOL;
     }
   }
   
