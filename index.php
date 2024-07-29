@@ -8,15 +8,15 @@
     $method = $_SERVER['REQUEST_METHOD'];
     
     // на входящий запрос надо ответить в течение 2 секунд
-	ignore_user_abort(true);
-	ob_start();
-	echo 'true';
-	http_response_code(200);
-	header('Connection: close');
-	header('Content-Length: '.ob_get_length());
-	ob_end_flush();
-	ob_flush();
-	flush(); // отправляем буфер в ответ с кодом 200    
+    ignore_user_abort(true);
+    ob_start();
+    echo 'true';
+    http_response_code(200);
+    header('Connection: close');
+    header('Content-Length: '.ob_get_length());
+    ob_end_flush();
+    ob_flush();
+    flush(); // отправляем буфер в ответ с кодом 200    
     // Далее неспеша обрабатываем POST запрос
 	 
     function autoloder($class) {
@@ -44,7 +44,7 @@
 	$mas = $_POST[$level1][$level2]; // параметры Хука
 	
 	
-    if ($level1 == 'leads' && $level2 == 'status'])) {
+    if ($level1 == 'leads' && $level2 == 'status') {
         foreach ($mas as $lead) {
             $data = array(); // массив в котором будут указаны все задачи
             // получить из базы данных список задач на создание
