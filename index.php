@@ -5,19 +5,20 @@
     header('Access-Control-Allow-Credentials: true');
     header('Content-Type: text/html; charset=utf-8');
     
-    // на входящий запрос надо ответить в течение 2 секунд иначе хук считается невалидным
-    ignore_user_abort(true);
-    ob_start();
-    echo 'true';
-    http_response_code(200);
-    header('Connection: close');
-    header('Content-Length: '.ob_get_length());
-    ob_end_flush();
-    ob_flush();
-    flush(); // отправляем буфер в ответ с кодом 200
+    $method = $_SERVER['REQUEST_METHOD'];
+    
+    // на входящий запрос надо ответить в течение 2 секунд
+	ignore_user_abort(true);
+	ob_start();
+	echo 'true';
+	http_response_code(200);
+	header('Connection: close');
+	header('Content-Length: '.ob_get_length());
+	ob_end_flush();
+	ob_flush();
+	flush(); // отправляем буфер в ответ с кодом 200    
     // Далее неспеша обрабатываем POST запрос
-    //-----------------------------------------------------
-
+	 
     function autoloder($class) {
         $file = __DIR__ . "/classes/{$class}.php";
         if(file_exists($file))
@@ -35,14 +36,16 @@
         // Если прошло больше времени, чем половина длительности токена
         if (time() - $amo->getSettings()->updated_at >= $amo->getSettings()->expires_in / 2) {
             $db->updateAmoVals($amo->updateAmoAccessToken());
-            echo "token updated at " . date("Y-m-d H:i:s") . PHP_EOL;
         }
     }
     
-
-    if (ISSET($_POST['leads']['status'])) {
-        
-        foreach ($_POST['leads']['status'] as $lead) {
+    $level1 = array_keys($_POST)[1]; // первый уровень массива (leads,task,contacts)
+	$level2 = array_keys($_POST[$level1])[0]; // второй уровень массива (add,update,status)
+	$mas = $_POST[$level1][$level2]; // параметры Хука
+	
+	
+    if ($level1 == 'leads' && $level2 == 'status'])) {
+        foreach ($mas as $lead) {
             $data = array(); // массив в котором будут указаны все задачи
             // получить из базы данных список задач на создание
             $array_task = $db->getLeadStatusAutomatization($lead['status_id'], $lead['pipeline_id']);
@@ -59,12 +62,11 @@
                 ];
                 array_push($data, $dat);
             }
-			
+            
             $amo->ApiRequest('/api/v4/tasks', $data);
         }
     }
     else {
         echo "no WebHook" . PHP_EOL;
     }
-	
 ?>
